@@ -1,3 +1,5 @@
+@import "tailwindcss"; /*CSS is always applied to a page globally. If we import tailwindcss in indexcss which is refernced in main.tsx entry point for app then all components will be able to use tailwind*/
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

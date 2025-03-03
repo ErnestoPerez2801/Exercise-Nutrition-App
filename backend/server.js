@@ -1,22 +1,39 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
+const { MongoClient } = require('mongodb');
+require('dotenv').config();
 
 const app = express();
-app.use(cors());
-app.use(bodyParser.json());
 
-app.use((req, res, next) =>
-{
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  );
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PATCH, DELETE, OPTIONS'
-  );
-  next();
+// Enable CORS for all routes
+app.use(cors({
+  origin: 'http://dressmeupproject.com',
+  credentials: true
+}));
+
+// Parse JSON bodies
+app.use(express.json());
+
+// Database Connection
+const uri = process.env.MONGODB_URI;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+async function connectToDatabase() {
+  try {
+    await client.connect();
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('MongoDB Connection Error:', error);
+  }
+}
+connectToDatabase();
+
+// Import API Routes
+const apiRoutes = require('./api'); // Import api.js
+apiRoutes(app, client); // Pass app and database client
+
+// Start the server
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
 });
-app.listen(5001); // start Node + Express server on port 5000

@@ -30,7 +30,7 @@ function CardUI() {
     var js = JSON.stringify(obj);
 
     try {
-      const response = await fetch(bp('api/addcard'), {
+      const response = await fetch(bp('addcard'), {
         method: 'POST',
         body: js,
         headers: { 'Content-Type': 'application/json' }
@@ -62,7 +62,7 @@ function CardUI() {
     var js = JSON.stringify(obj);
 
     try {
-      const response = await fetch(bp('api/searchcards'), {
+      const response = await fetch(bp('searchcards'), {
         method: 'POST',
         body: js,
         headers: { 'Content-Type': 'application/json' }
@@ -82,9 +82,6 @@ function CardUI() {
     } catch (e: any) {
       console.log(e.toString());
       setResults(e.toString());
-      if (res.jwtToken) {
-        storage.storeToken(res.jwtToken);
-      }
     }
   };
 

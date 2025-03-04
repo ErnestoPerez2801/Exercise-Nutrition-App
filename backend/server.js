@@ -7,7 +7,9 @@ const app = express();
 
 // Enable CORS for all routes
 app.use(cors({
-    origin: ['http://dressmeupproject.com', 'https://dressmeupproject.com'],
+  origin: ['http://dressmeupproject.com', 'https://dressmeupproject.com'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 

@@ -1,0 +1,24 @@
+{
+  "name": "dress-me-up",
+  "version": "1.0.0",
+  "main": "webhook-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Group23-COP4331/Dress-Me-Up.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Group23-COP4331/Dress-Me-Up/issues"
+  },
+  "homepage": "https://github.com/Group23-COP4331/Dress-Me-Up#readme",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "express": "^4.21.2"
+  }
+}

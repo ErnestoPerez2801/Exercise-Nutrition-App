@@ -3,27 +3,33 @@ const bodyParser = require('body-parser');
 const { exec } = require('child_process');
 
 const app = express();
-
-// Parse JSON bodies
 app.use(bodyParser.json());
 
-// Set the repository path to your working clone
+// Update this to the absolute path of your repository working copy.
 const repoPath = '/root/Dress-Me-Up';
+// Update this to the directory where the build output should go.
+const deployPath = '/var/www/html';
 
 app.post('/git-webhook', (req, res) => {
   console.log('Webhook received:', req.body);
 
-  // Verify that this is a push event (GitHub sends X-GitHub-Event header)
   if (req.headers['x-github-event'] === 'push') {
-    // Execute the git pull command inside the repo directory
-    exec('git pull origin main', { cwd: repoPath }, (error, stdout, stderr) => {
+    // Chain commands: git pull, npm install, npm run build, and then copy the build output.
+    // Adjust "build" below if your build folder is named differently (e.g., "dist")
+    const cmd = `
+      git pull origin main &&
+      npm install &&
+      npm run build &&
+      cp -r ${repoPath}/frontend/dist/* ${deployPath}
+    `;
+    
+    exec(cmd, { cwd: repoPath }, (error, stdout, stderr) => {
       if (error) {
-        console.error(`Error during git pull: ${error}`);
-        res.status(500).send(`Error: ${error}`);
-        return;
+        console.error(`Error during automation: ${error}`);
+        return res.status(500).send(`Error: ${error}`);
       }
-      console.log(`git pull output: ${stdout}`);
-      res.status(200).send('Repository updated successfully.');
+      console.log(`Automation output: ${stdout}`);
+      res.status(200).send('Repository updated, frontend built, and deployed successfully.');
     });
   } else {
     res.status(200).send('Event ignored (not a push event).');

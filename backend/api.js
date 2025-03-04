@@ -4,6 +4,47 @@ const Card = require('./models/card');
 const token = require('./createJWT'); // Assuming you have your JWT helper in createJWT.js
 
 module.exports = function (app) {
+
+
+app.post('/api/register', async (req, res) => {
+  const { FirstName, LastName, Login, Password } = req.body;
+
+  try {
+    // 1. Check if user already exists
+    const existingUser = await User.findOne({ Login: Login.trim() });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User with this login already exists' });
+    }
+
+    // 2. Create a new user
+    const newUser = new User({
+      UserId: Date.now(), // or another unique ID approach
+      FirstName: FirstName.trim(),
+      LastName: LastName.trim(),
+      Login: Login.trim(),
+      Password: Password.trim() // In production, hash this!
+    });
+
+    await newUser.save();
+
+    // 3. (Optional) Auto-login the user by returning a JWT
+    // const jwtToken = token.createToken(newUser.FirstName, newUser.LastName, newUser.UserId);
+
+    // 4. Return success
+    res.status(200).json({
+      error: '',
+      // jwtToken, // if you're returning a token
+      firstName: newUser.FirstName,
+      lastName: newUser.LastName,
+      userId: newUser.UserId
+    });
+  } catch (e) {
+    console.error('Error in /api/register:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+
   app.post('/api/addcard', async (req, res, next) => {
     const { userId, card, jwtToken } = req.body;
 
